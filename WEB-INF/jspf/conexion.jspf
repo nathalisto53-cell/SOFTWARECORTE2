@@ -1,0 +1,293 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%-- 
+    ==========================================================================
+    SIGRADO - Conexión JSTL 1.2 a Supabase PostgreSQL (Cero Servlets, Cero Scriptlets)
+    Reemplaza [TU-PASSWORD], [TU-PROJECT-ID] o tu host asignado en Supabase Settings -> Database.
+    Ejemplo Transaction Pooler / Session Pooler o Direct Connection:
+    Driver: org.postgresql.Driver
+    URL: jdbc:postgresql://aws-0-[REGION].pooler.supabase.com:6543/postgres?sslmode=require
+    o Direct: jdbc:postgresql://db.[TU-PROJECT-ID].supabase.co:5432/postgres?sslmode=require
+    ==========================================================================
+--%>
+<sql:setDataSource var="sigradoDb"
+                   driver="org.postgresql.Driver"
+                   url="jdbc:postgresql://db.fzxikusnodngkvlztrgv.supabase.co:5432/postgres?sslmode=require"
+                   user="postgres"
+                   password="[TU-PASSWORD-DE-SUPABASE]" />
+
+<%-- =========================================================================
+     ALMACÉN DE DATOS DEMO COMPARTIDO (Cero Servlets, Cero Scriptlets, Cero DAOs)
+     Se ejecuta cuando la base de datos Supabase aún no tiene clave configurada,
+     permitiendo registro, aprobación, inicio de sesión y gestión en tiempo real.
+     ========================================================================= --%>
+<c:if test="${empty applicationScope.demoListaUsuarios}">
+    <jsp:useBean id="appDemoList" class="java.util.ArrayList" scope="application" />
+
+    <%-- 1. Administrador Carlos --%>
+    <jsp:useBean id="uAdmin" class="java.util.HashMap" scope="page" />
+    <c:set target="${uAdmin}" property="id" value="1" />
+    <c:set target="${uAdmin}" property="documento" value="1001" />
+    <c:set target="${uAdmin}" property="nombres" value="Carlos" />
+    <c:set target="${uAdmin}" property="apellidos" value="Administrador" />
+    <c:set target="${uAdmin}" property="email" value="admin@sigrado.edu.co" />
+    <c:set target="${uAdmin}" property="password_hash" value="123456" />
+    <c:set target="${uAdmin}" property="telefono" value="3001112233" />
+    <c:set target="${uAdmin}" property="programa" value="Ingeniería de Sistemas" />
+    <c:set target="${uAdmin}" property="roles_asignados" value="administrador, docente" />
+    <c:set target="${uAdmin}" property="rol_id" value="1" />
+    <c:set target="${uAdmin}" property="activo" value="1" />
+    <c:set target="${uAdmin}" property="fecha_fmt" value="15/08/2026" />
+    <c:set var="dummy" value="${appDemoList.add(uAdmin)}" />
+
+    <%-- 2. Comité Martha --%>
+    <jsp:useBean id="uComite" class="java.util.HashMap" scope="page" />
+    <c:set target="${uComite}" property="id" value="2" />
+    <c:set target="${uComite}" property="documento" value="1002" />
+    <c:set target="${uComite}" property="nombres" value="Martha" />
+    <c:set target="${uComite}" property="apellidos" value="Comité Grados" />
+    <c:set target="${uComite}" property="email" value="comite@sigrado.edu.co" />
+    <c:set target="${uComite}" property="password_hash" value="123456" />
+    <c:set target="${uComite}" property="telefono" value="3002223344" />
+    <c:set target="${uComite}" property="programa" value="Ingeniería de Sistemas" />
+    <c:set target="${uComite}" property="roles_asignados" value="comite" />
+    <c:set target="${uComite}" property="rol_id" value="2" />
+    <c:set target="${uComite}" property="activo" value="1" />
+    <c:set target="${uComite}" property="fecha_fmt" value="16/08/2026" />
+    <c:set var="dummy" value="${appDemoList.add(uComite)}" />
+
+    <%-- 3. Docente Elsa --%>
+    <jsp:useBean id="uDocente" class="java.util.HashMap" scope="page" />
+    <c:set target="${uDocente}" property="id" value="3" />
+    <c:set target="${uDocente}" property="documento" value="1003" />
+    <c:set target="${uDocente}" property="nombres" value="Elsa Patricia" />
+    <c:set target="${uDocente}" property="apellidos" value="Carvajal" />
+    <c:set target="${uDocente}" property="email" value="elsa.carvajal@sigrado.edu.co" />
+    <c:set target="${uDocente}" property="password_hash" value="123456" />
+    <c:set target="${uDocente}" property="telefono" value="3003334455" />
+    <c:set target="${uDocente}" property="programa" value="Ingeniería de Sistemas" />
+    <c:set target="${uDocente}" property="roles_asignados" value="docente" />
+    <c:set target="${uDocente}" property="rol_id" value="3" />
+    <c:set target="${uDocente}" property="activo" value="1" />
+    <c:set target="${uDocente}" property="fecha_fmt" value="18/08/2026" />
+    <c:set var="dummy" value="${appDemoList.add(uDocente)}" />
+
+    <%-- 4. Docente Evaluador Fernando --%>
+    <jsp:useBean id="uDocente2" class="java.util.HashMap" scope="page" />
+    <c:set target="${uDocente2}" property="id" value="4" />
+    <c:set target="${uDocente2}" property="documento" value="1004" />
+    <c:set target="${uDocente2}" property="nombres" value="Fernando" />
+    <c:set target="${uDocente2}" property="apellidos" value="Evaluador Pérez" />
+    <c:set target="${uDocente2}" property="email" value="fernando.perez@sigrado.edu.co" />
+    <c:set target="${uDocente2}" property="password_hash" value="123456" />
+    <c:set target="${uDocente2}" property="telefono" value="3004445566" />
+    <c:set target="${uDocente2}" property="programa" value="Ingeniería de Sistemas" />
+    <c:set target="${uDocente2}" property="roles_asignados" value="docente" />
+    <c:set target="${uDocente2}" property="rol_id" value="3" />
+    <c:set target="${uDocente2}" property="activo" value="1" />
+    <c:set target="${uDocente2}" property="fecha_fmt" value="19/08/2026" />
+    <c:set var="dummy" value="${appDemoList.add(uDocente2)}" />
+
+    <%-- 5. Estudiante Juan Diego (Activo / Aprobado) --%>
+    <jsp:useBean id="uEstudiante" class="java.util.HashMap" scope="page" />
+    <c:set target="${uEstudiante}" property="id" value="5" />
+    <c:set target="${uEstudiante}" property="documento" value="1005" />
+    <c:set target="${uEstudiante}" property="nombres" value="Juan Diego" />
+    <c:set target="${uEstudiante}" property="apellidos" value="Gómez" />
+    <c:set target="${uEstudiante}" property="email" value="juan.gomez@sigrado.edu.co" />
+    <c:set target="${uEstudiante}" property="password_hash" value="123456" />
+    <c:set target="${uEstudiante}" property="telefono" value="3005556677" />
+    <c:set target="${uEstudiante}" property="programa" value="Ingeniería de Sistemas" />
+    <c:set target="${uEstudiante}" property="roles_asignados" value="estudiante" />
+    <c:set target="${uEstudiante}" property="rol_id" value="4" />
+    <c:set target="${uEstudiante}" property="activo" value="1" />
+    <c:set target="${uEstudiante}" property="fecha_fmt" value="20/08/2026" />
+    <c:set var="dummy" value="${appDemoList.add(uEstudiante)}" />
+
+    <%-- 6. Estudiante Laura Sofía (Registrada pero PENDIENTE DE APROBACIÓN POR EL ADMINISTRADOR) --%>
+    <jsp:useBean id="uEstudiantePend" class="java.util.HashMap" scope="page" />
+    <c:set target="${uEstudiantePend}" property="id" value="6" />
+    <c:set target="${uEstudiantePend}" property="documento" value="1006" />
+    <c:set target="${uEstudiantePend}" property="nombres" value="Laura Sofía" />
+    <c:set target="${uEstudiantePend}" property="apellidos" value="Pareja Torres" />
+    <c:set target="${uEstudiantePend}" property="email" value="laura.torres@sigrado.edu.co" />
+    <c:set target="${uEstudiantePend}" property="password_hash" value="123456" />
+    <c:set target="${uEstudiantePend}" property="telefono" value="3006667788" />
+    <c:set target="${uEstudiantePend}" property="programa" value="Ingeniería de Sistemas" />
+    <c:set target="${uEstudiantePend}" property="roles_asignados" value="estudiante" />
+    <c:set target="${uEstudiantePend}" property="rol_id" value="4" />
+    <c:set target="${uEstudiantePend}" property="activo" value="0" />
+    <c:set target="${uEstudiantePend}" property="fecha_fmt" value="Hoy (Pendiente)" />
+    <c:set var="dummy" value="${appDemoList.add(uEstudiantePend)}" />
+
+    <c:set var="demoListaUsuarios" value="${appDemoList}" scope="application" />
+</c:if>
+
+<%-- 2. ALMACÉN DEMO DE IDEAS DEL BANCO COMPARTIDO --%>
+<c:if test="${empty applicationScope.demoIdeasBanco}">
+    <jsp:useBean id="appDemoIdeas" class="java.util.ArrayList" scope="application" />
+
+    <%-- Idea Banco 1 --%>
+    <jsp:useBean id="ideaB1" class="java.util.HashMap" scope="page" />
+    <c:set target="${ideaB1}" property="id" value="1" />
+    <c:set target="${ideaB1}" property="codigo" value="BAN-2026-01" />
+    <c:set target="${ideaB1}" property="titulo" value="Sistema Inteligente de Monitoreo de Cultivos con IoT y Visión por Computador" />
+    <c:set target="${ideaB1}" property="descripcion" value="Implementación de nodos sensoriales ESP32, backend en Python y visión artificial con algoritmos YOLO para detección temprana de plagas, humedad y estrés hídrico en invernaderos protegidos." />
+    <c:set target="${ideaB1}" property="objetivo_general" value="Desarrollar e implementar un sistema ciberfísico basado en IoT y procesamiento de imágenes para el monitoreo automatizado de variables microclimáticas y fitosanitarias en cultivos agrícolas." />
+    <c:set target="${ideaB1}" property="tipo_nivel" value="Profesional" />
+    <c:set target="${ideaB1}" property="tipo_modalidad" value="Desarrollo tecnologico" />
+    <c:set target="${ideaB1}" property="linea_investigacion" value="Inteligencia Artificial y Sistemas Embebidos" />
+    <c:set target="${ideaB1}" property="proponente" value="Elsa Patricia Carvajal" />
+    <c:set target="${ideaB1}" property="proponente_id" value="3" />
+    <c:set target="${ideaB1}" property="estado" value="Aprobada" />
+    <c:set target="${ideaB1}" property="disponible" value="1" />
+    <c:set target="${ideaB1}" property="fecha_fmt" value="10/08/2026" />
+    <c:set var="dummyB1" value="${appDemoIdeas.add(ideaB1)}" />
+
+    <%-- Idea Banco 2 --%>
+    <jsp:useBean id="ideaB2" class="java.util.HashMap" scope="page" />
+    <c:set target="${ideaB2}" property="id" value="2" />
+    <c:set target="${ideaB2}" property="codigo" value="BAN-2026-02" />
+    <c:set target="${ideaB2}" property="titulo" value="Plataforma Web Descentralizada para Trazabilidad en Cadenas de Suministro con Blockchain" />
+    <c:set target="${ideaB2}" property="descripcion" value="Diseño y despliegue de contratos inteligentes en redes Ethereum/Polygon para auditoría inmutable de insumos y productos farmacéuticos desde su producción hasta el consumidor final." />
+    <c:set target="${ideaB2}" property="objetivo_general" value="Diseñar una arquitectura descentralizada basada en contratos inteligentes para garantizar la integridad, no repudio y trazabilidad en tiempo real de cadenas de suministro de alta criticidad." />
+    <c:set target="${ideaB2}" property="tipo_nivel" value="Profesional" />
+    <c:set target="${ideaB2}" property="tipo_modalidad" value="Investigacion" />
+    <c:set target="${ideaB2}" property="linea_investigacion" value="Ciberseguridad y Tecnologías Distribuidas" />
+    <c:set target="${ideaB2}" property="proponente" value="Fernando Evaluador Pérez" />
+    <c:set target="${ideaB2}" property="proponente_id" value="4" />
+    <c:set target="${ideaB2}" property="estado" value="Aprobada" />
+    <c:set target="${ideaB2}" property="disponible" value="1" />
+    <c:set target="${ideaB2}" property="fecha_fmt" value="12/08/2026" />
+    <c:set var="dummyB2" value="${appDemoIdeas.add(ideaB2)}" />
+
+    <%-- Idea Banco 3 --%>
+    <jsp:useBean id="ideaB3" class="java.util.HashMap" scope="page" />
+    <c:set target="${ideaB3}" property="id" value="3" />
+    <c:set target="${ideaB3}" property="codigo" value="BAN-2026-03" />
+    <c:set target="${ideaB3}" property="titulo" value="Aplicativo Móvil Accesible para la Inclusión Laboral y Formativa de Personas con Discapacidad Auditiva" />
+    <c:set target="${ideaB3}" property="descripcion" value="Software móvil con reconocimiento de voz, transcripción bidireccional inmediata y traducción interactiva a Lengua de Señas Colombiana (LSC) para entornos de trabajo." />
+    <c:set target="${ideaB3}" property="objetivo_general" value="Construir una solución de software accesible multiplataforma que facilite la comunicación laboral de trabajadores con discapacidad auditiva mediante procesamiento de lenguaje natural." />
+    <c:set target="${ideaB3}" property="tipo_nivel" value="Tecnologico" />
+    <c:set target="${ideaB3}" property="tipo_modalidad" value="Desarrollo tecnologico" />
+    <c:set target="${ideaB3}" property="linea_investigacion" value="Ingeniería de Software y Accesibilidad" />
+    <c:set target="${ideaB3}" property="proponente" value="Martha Comité Grados" />
+    <c:set target="${ideaB3}" property="proponente_id" value="2" />
+    <c:set target="${ideaB3}" property="estado" value="Aprobada" />
+    <c:set target="${ideaB3}" property="disponible" value="1" />
+    <c:set target="${ideaB3}" property="fecha_fmt" value="14/08/2026" />
+    <c:set var="dummyB3" value="${appDemoIdeas.add(ideaB3)}" />
+
+    <%-- Idea Banco 4 --%>
+    <jsp:useBean id="ideaB4" class="java.util.HashMap" scope="page" />
+    <c:set target="${ideaB4}" property="id" value="4" />
+    <c:set target="${ideaB4}" property="codigo" value="BAN-2026-04" />
+    <c:set target="${ideaB4}" property="titulo" value="Modelo Predictivo de Deserción Estudiantil Universitaria usando Técnicas de Machine Learning" />
+    <c:set target="${ideaB4}" property="descripcion" value="Análisis de métricas académicas y socioeconómicas institucionales para entrenar modelos supervisados que generen alertas preventivas de deserción temprana." />
+    <c:set target="${ideaB4}" property="objetivo_general" value="Entrenar y validar clasificadores de machine learning sobre historiales académicos para predecir oportunamente la probabilidad de deserción en programas de ingeniería." />
+    <c:set target="${ideaB4}" property="tipo_nivel" value="Profesional" />
+    <c:set target="${ideaB4}" property="tipo_modalidad" value="Investigacion" />
+    <c:set target="${ideaB4}" property="linea_investigacion" value="Analítica de Datos y Minería de Procesos" />
+    <c:set target="${ideaB4}" property="proponente" value="Carlos Administrador" />
+    <c:set target="${ideaB4}" property="proponente_id" value="1" />
+    <c:set target="${ideaB4}" property="estado" value="Aprobada" />
+    <c:set target="${ideaB4}" property="disponible" value="1" />
+    <c:set target="${ideaB4}" property="fecha_fmt" value="16/08/2026" />
+    <c:set var="dummyB4" value="${appDemoIdeas.add(ideaB4)}" />
+
+    <c:set var="demoIdeasBanco" value="${appDemoIdeas}" scope="application" />
+</c:if>
+
+<%-- 3. ALMACÉN DEMO DE PROYECTOS DE GRADO --%>
+<c:if test="${empty applicationScope.demoProyectos}">
+    <jsp:useBean id="appDemoProyectos" class="java.util.ArrayList" scope="application" />
+
+    <%-- Proyecto Semilla de Juan Diego Gómez (En Fase 2) --%>
+    <jsp:useBean id="proy1" class="java.util.HashMap" scope="page" />
+    <c:set target="${proy1}" property="id" value="1" />
+    <c:set target="${proy1}" property="codigo" value="GRA-2026-01" />
+    <c:set target="${proy1}" property="codigo_modalidad" value="125-2026-1" />
+    <c:set target="${proy1}" property="titulo" value="Desarrollo de un Sistema Web de Gestión de Historias Clínicas Odontológicas con Estándar HL7 FHIR" />
+    <c:set target="${proy1}" property="objetivo_general" value="Construir una solución interoperable en entorno cloud para la gestión integral de historias clínicas odontológicas bajo especificación técnica internacional HL7 FHIR." />
+    <c:set target="${proy1}" property="descripcion" value="Proyecto enfocado en la interoperabilidad semántica y seguridad de datos de salud en clínicas universitarias." />
+    <c:set target="${proy1}" property="tipo_idea" value="Propia" />
+    <c:set target="${proy1}" property="tipo_modalidad" value="Desarrollo tecnologico" />
+    <c:set target="${proy1}" property="tipo_nivel" value="Profesional" />
+    <c:set target="${proy1}" property="linea_investigacion" value="Sistemas Distribuidos e Informática Médica" />
+    <c:set target="${proy1}" property="fase" value="2" />
+    <c:set target="${proy1}" property="responsable" value="estudiante" />
+    <c:set target="${proy1}" property="estado" value="En curso" />
+    <c:set target="${proy1}" property="director_id" value="3" />
+    <c:set target="${proy1}" property="dir_nom" value="Elsa Patricia" />
+    <c:set target="${proy1}" property="dir_ape" value="Carvajal" />
+    <c:set target="${proy1}" property="dir_email" value="elsa.carvajal@sigrado.edu.co" />
+    <c:set target="${proy1}" property="codir_nom" value="" />
+    <c:set target="${proy1}" property="codir_ape" value="" />
+    <c:set target="${proy1}" property="codir_email" value="" />
+    <c:set target="${proy1}" property="estudiante_id" value="5" />
+    <c:set target="${proy1}" property="estudiante_doc" value="1005" />
+    <c:set target="${proy1}" property="estudiante_nom" value="Juan Diego Gómez" />
+    <c:set target="${proy1}" property="soporte_pago_url" value="https://drive.google.com/file/d/recibo-pago-juandiego.pdf" />
+    <c:set target="${proy1}" property="fecha_creacion" value="20/08/2026" />
+    <c:set var="dummyP1" value="${appDemoProyectos.add(proy1)}" />
+
+    <c:set var="demoProyectos" value="${appDemoProyectos}" scope="application" />
+</c:if>
+
+<%-- 4. ALMACÉN DEMO DE DOCUMENTOS Y ENLACES ENTREGADOS --%>
+<c:if test="${empty applicationScope.demoDocumentos}">
+    <jsp:useBean id="appDemoDocs" class="java.util.ArrayList" scope="application" />
+
+    <%-- Doc 1: Recibo de Pago --%>
+    <jsp:useBean id="doc1" class="java.util.HashMap" scope="page" />
+    <c:set target="${doc1}" property="id" value="1" />
+    <c:set target="${doc1}" property="proyecto_id" value="1" />
+    <c:set target="${doc1}" property="fase" value="1" />
+    <c:set target="${doc1}" property="tipo" value="SoportePago" />
+    <c:set target="${doc1}" property="version" value="1" />
+    <c:set target="${doc1}" property="url" value="https://drive.google.com/file/d/recibo-pago-juandiego.pdf" />
+    <c:set target="${doc1}" property="titulo" value="Comprobante de Pago Derechos de Grado" />
+    <c:set target="${doc1}" property="observaciones" value="Pago electrónico PSE Banco Davivienda ref 9823478." />
+    <c:set target="${doc1}" property="subido_por" value="5" />
+    <c:set target="${doc1}" property="subido_por_nombre" value="Juan Diego Gómez" />
+    <c:set target="${doc1}" property="fecha_subida" value="20/08/2026 09:30" />
+    <c:set var="dummyD1" value="${appDemoDocs.add(doc1)}" />
+
+    <%-- Doc 2: Formato F-DC-124 --%>
+    <jsp:useBean id="doc2" class="java.util.HashMap" scope="page" />
+    <c:set target="${doc2}" property="id" value="2" />
+    <c:set target="${doc2}" property="proyecto_id" value="1" />
+    <c:set target="${doc2}" property="fase" value="2" />
+    <c:set target="${doc2}" property="tipo" value="Propuesta_FDC124" />
+    <c:set target="${doc2}" property="version" value="1" />
+    <c:set target="${doc2}" property="url" value="https://docs.google.com/document/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit" />
+    <c:set target="${doc2}" property="titulo" value="Anteproyecto F-DC-124 (Versión 1)" />
+    <c:set target="${doc2}" property="observaciones" value="Entrega inicial del documento de propuesta para revisión de la Directora." />
+    <c:set target="${doc2}" property="subido_por" value="5" />
+    <c:set target="${doc2}" property="subido_por_nombre" value="Juan Diego Gómez" />
+    <c:set target="${doc2}" property="fecha_subida" value="25/08/2026 14:15" />
+    <c:set var="dummyD2" value="${appDemoDocs.add(doc2)}" />
+
+    <c:set var="demoDocumentos" value="${appDemoDocs}" scope="application" />
+</c:if>
+
+<%-- 5. ALMACÉN DEMO DE RESPUESTAS Y ACTAS DE COMITÉ / DIRECTORES --%>
+<c:if test="${empty applicationScope.demoRespuestas}">
+    <jsp:useBean id="appDemoResp" class="java.util.ArrayList" scope="application" />
+
+    <jsp:useBean id="resp1" class="java.util.HashMap" scope="page" />
+    <c:set target="${resp1}" property="id" value="1" />
+    <c:set target="${resp1}" property="proyecto_id" value="1" />
+    <c:set target="${resp1}" property="fase" value="1" />
+    <c:set target="${resp1}" property="ronda" value="1" />
+    <c:set target="${resp1}" property="rol" value="comite" />
+    <c:set target="${resp1}" property="estado" value="Aprobado" />
+    <c:set target="${resp1}" property="acta_numero" value="ACTA-COM-2026-08" />
+    <c:set target="${resp1}" property="comentario" value="Se valida favorablemente la idea y el soporte de pago. Se asigna código de modalidad 125-2026-1 y se designa como Directora a la docente Elsa Patricia Carvajal." />
+    <c:set target="${resp1}" property="fecha" value="22/08/2026 16:00" />
+    <c:set var="dummyR1" value="${appDemoResp.add(resp1)}" />
+
+    <c:set var="demoRespuestas" value="${appDemoResp}" scope="application" />
+</c:if>
+

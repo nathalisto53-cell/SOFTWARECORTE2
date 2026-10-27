@@ -1,0 +1,5 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ include file="/WEB-INF/jspf/guard.jspf" %>
+<c:if test="${sessionScope.rolActivo ne 'docente'}">
+    <c:redirect url="/error.jsp?code=403" />
+</c:if>

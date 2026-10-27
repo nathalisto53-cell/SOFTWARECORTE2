@@ -1,0 +1,14 @@
+<%@ page pageEncoding="UTF-8" %>
+        <footer class="app-footer">
+            <div>
+                <strong>SIGRADO</strong> &bull; Sistema de Gestión de Trabajos de Grado &bull; Ingeniería de Sistemas
+            </div>
+            <div>
+                Tecnológico y Profesional &bull; Periodo Vigente 2026-2
+            </div>
+        </footer>
+    </div> <%-- Fin app-main --%>
+</div> <%-- Fin app-layout --%>
+<script src="${pageContext.request.contextPath}/js/main.js"></script>
+</body>
+</html>
